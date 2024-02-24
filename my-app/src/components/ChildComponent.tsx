@@ -1,13 +1,30 @@
 import React, { FC } from 'react'
 
+let someList: number[] = [1, 2, 3, 4, 5]
+
 type Props = {
-  count: number
+  value: string | number
 }
-export const ChildComponent:FC<any> = (props: Props) => {
+export const ChildComponent: FC<Props> = (props: Props) => {
   return (
     <>
-      <div>ChildComponent</div>
-      <span> Вот данные из родительского компонента: {props.count}</span>
+      <div>Функциональный компонент</div>
+      <span> Вот данные из родительского компонента: {props.value}</span>
+      {someList.map((item) => (
+        <div 
+          key={item} 
+          style={{
+            display: 'block',
+            margin: '50px',
+            backgroundColor: 'blue',
+            color: 'white',
+            padding: '10px',
+            fontSize: '20px'
+          }}
+        >
+          {item}
+        </div>
+      ))}
     </>
   )
 }

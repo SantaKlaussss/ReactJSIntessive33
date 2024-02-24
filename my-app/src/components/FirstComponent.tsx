@@ -2,77 +2,83 @@ import React, { Component } from 'react'
 import { ChildComponent } from './ChildComponent';
 
 type StateTypes = {
-  count: number;
+  value: string | number;
 }
 
 export class FirstComponent extends Component<{}, StateTypes> {
   constructor(props: any) {
     super(props)
     this.state = {
-      count: 0
+      value: ''
     }
   }
 
-  getSnapshotBeforeUpdate(prevProps: Readonly<{}>, prevState: Readonly<StateTypes>) {
-    console.log('getSnapshotBeforeUpdate');
-    
+  inputRef = React.createRef<HTMLInputElement>()
+
+  increment = () => {
+    if (typeof this.state.value === 'number' || this.state.value === '') {
+      this.setState({
+        value: Number(this.state.value) + 1
+      })
+    }
   }
 
-  componentDidMount() {
-    console.log('Я смантировался');
+  decrement = () => {
+    if (typeof this.state.value === 'number' || this.state.value === '') {
+      this.setState({
+        value: Number(this.state.value) - 1
+      })
+    }
   }
 
-  componentDidUpdate(prevProps: Readonly<{}>, prevState: Readonly<StateTypes>, snapshot?: any): void {
-    console.log('Я обновился' , prevState.count, this.state.count);
+  changeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      value: event.target.value
+    })
   }
 
-  componentWillUnmount(): void {
-    console.log('Я размонтировался');
+  handleSubmit = (e: React.MouseEvent<HTMLInputElement>) => {
+    e.preventDefault()
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    console.log('Я поймал ошибку', error, errorInfo);
+  focusInput = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    this.inputRef.current?.focus()
   }
+
   render() {
-    console.log('Я зарендерился');
-    
-    let increment = () => {
-      this.setState({
-        count: this.state.count + 1
-      })
-    }
-
-    let decrement = () => {
-      this.setState({
-        count: this.state.count - 1
-      })
-    }
-
     return (
-      <>
-        <div
-          style={{
-            display: 'inline-block',
-            margin: '50px',
-            backgroundColor: 'lightblue',
-            padding: '30px',
-          }}
-        >
-          Классовый Component
+      <div
+        style={{
+          display: 'inline-block',
+          margin: '50px',
+          backgroundColor: 'lightblue',
+          padding: '30px',
+        }}
+      >
+        Классовый Component
+        <form action='' method=''>
+          <label htmlFor='data'>Введите данные: </label>
           <input
-            type="text"
-            value={this.state.count}
+            ref={this.inputRef}
+            name='data'
+            type='text'
+            onChange={this.changeValue}
+            value={this.state.value}
             style={{
               marginTop: '10px',
-              display: 'block',
+              display: 'inlineBlock',
             }}
           />
-          <button onClick={increment}>Прибавить</button>
-          <button onClick={decrement}>Убавить</button>
-          <ChildComponent count={this.state.count} />
-        </div>
-      </>
+          <div>
+            <button type='button' onClick={this.decrement}>Убавить 1</button>
+            <button type='button' onClick={this.increment}>Прибавить 1</button>
+            <input type='submit' onClick={this.handleSubmit} disabled={this.state.value === 'реакт'} />
+            <button type='button' onClick={this.focusInput}>Focus on Input</button>
+          </div>
+        </form>
+        <ChildComponent value={this.state.value} />
+      </div>
     )
   }
-
 };
